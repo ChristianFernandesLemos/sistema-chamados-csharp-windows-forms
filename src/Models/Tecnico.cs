@@ -6,7 +6,7 @@ namespace SistemaChamados.Models
     public class Tecnico : Funcionarios
     {
         // Construtor
-        public Tecnico(int id, char nome, string cpf, string email, string senha, int nivelAcesso)
+        public Tecnico(int id, string nome, string cpf, string email, string senha, int nivelAcesso)
             : base(id, nome, cpf, email, senha, nivelAcesso)
         {
         }

@@ -41,7 +41,7 @@ namespace SistemaChamados.Controllers
         }
 
         // Adicionar funcionário (apenas ADM)
-        public bool AdicionarFuncionario(Funcionarios funcionarioLogado, char nome, string cpf, string email, string senha, int nivelAcesso, string tipoFuncionario)
+        public bool AdicionarFuncionario(Funcionarios funcionarioLogado, string nome, string cpf, string email, string senha, int nivelAcesso, string tipoFuncionario)
         {
             try
             {

@@ -1,14 +1,20 @@
-using System;
-using System.Windows.Forms;
-using SistemaChamados.Controllers;
+﻿using SistemaChamados.Controllers;
 using SistemaChamados.Data;
 using SistemaChamados.Models;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
-namespace SistemaChamados.Forms
+namespace SistemaChamados.src.Forms
 {
     public partial class LoginForm : Form
     {
-        private FuncionariosController _funcionariosController;
         private TextBox txtEmail;
         private TextBox txtSenha;
         private Button btnLogin;
@@ -16,13 +22,13 @@ namespace SistemaChamados.Forms
         private Label lblSenha;
         private Label lblTitulo;
         private CheckBox chkMostrarSenha;
+        private FuncionariosController _funcionariosController;
 
         public LoginForm()
         {
             InitializeComponent();
             InicializarControladores();
         }
-
         private void InicializarControladores()
         {
             try
@@ -34,7 +40,7 @@ namespace SistemaChamados.Forms
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro ao conectar com o banco de dados: {ex.Message}", 
+                MessageBox.Show($"Erro ao conectar com o banco de dados: {ex.Message}",
                     "Erro de Conexão", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -157,7 +163,7 @@ namespace SistemaChamados.Forms
             {
                 if (string.IsNullOrWhiteSpace(txtEmail.Text))
                 {
-                    MessageBox.Show("Por favor, informe o email.", "Campo Obrigatório", 
+                    MessageBox.Show("Por favor, informe o email.", "Campo Obrigatório",
                         MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     txtEmail.Focus();
                     return;
@@ -165,7 +171,7 @@ namespace SistemaChamados.Forms
 
                 if (string.IsNullOrWhiteSpace(txtSenha.Text))
                 {
-                    MessageBox.Show("Por favor, informe a senha.", "Campo Obrigatório", 
+                    MessageBox.Show("Por favor, informe a senha.", "Campo Obrigatório",
                         MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     txtSenha.Focus();
                     return;
@@ -179,7 +185,7 @@ namespace SistemaChamados.Forms
 
                 if (funcionario != null)
                 {
-                    MessageBox.Show($"Login realizado com sucesso!\nBem-vindo, {funcionario.Email}", 
+                    MessageBox.Show($"Login realizado com sucesso!\nBem-vindo, {funcionario.Email}",
                         "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                     // Abrir formulário principal baseado no tipo de usuário
@@ -199,7 +205,7 @@ namespace SistemaChamados.Forms
                 }
                 else
                 {
-                    MessageBox.Show("Email ou senha incorretos.", "Erro de Login", 
+                    MessageBox.Show("Email ou senha incorretos.", "Erro de Login",
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
                     txtSenha.Clear();
                     txtSenha.Focus();
@@ -207,7 +213,7 @@ namespace SistemaChamados.Forms
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro ao realizar login: {ex.Message}", "Erro", 
+                MessageBox.Show($"Erro ao realizar login: {ex.Message}", "Erro",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally
@@ -242,12 +248,12 @@ namespace SistemaChamados.Forms
         {
             _funcionarioLogado = funcionario;
             _funcionariosController = funcionariosController;
-            
+
             // Inicializar controlador de chamados
             string connectionString = "Server=localhost;Database=SistemaChamados;Integrated Security=true;";
             var database = new SqlServerConnection(connectionString);
             _chamadosController = new ChamadosController(database);
-            
+
             InitializeComponent();
             CarregarDados();
         }
@@ -257,10 +263,10 @@ namespace SistemaChamados.Forms
             this.Text = $"Sistema de Chamados - Administrador: {_funcionarioLogado.Email}";
             this.Size = new System.Drawing.Size(1000, 700);
             this.StartPosition = FormStartPosition.CenterScreen;
-            
+
             // Aqui você adicionaria os controles específicos do administrador
             // Como DataGridView para chamados, botões para gerenciar usuários, etc.
-            
+
             var lblBemVindo = new Label();
             lblBemVindo.Text = $"Bem-vindo, Administrador {_funcionarioLogado.Email}";
             lblBemVindo.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold);
@@ -276,12 +282,12 @@ namespace SistemaChamados.Forms
                 // Carregar estatísticas e dados iniciais
                 var estatisticasChamados = _chamadosController.ObterEstatisticas();
                 var estatisticasFuncionarios = _funcionariosController.ObterEstatisticasFuncionarios(_funcionarioLogado);
-                
+
                 // Exibir informações no formulário
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro ao carregar dados: {ex.Message}", "Erro", 
+                MessageBox.Show($"Erro ao carregar dados: {ex.Message}", "Erro",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -298,12 +304,12 @@ namespace SistemaChamados.Forms
         {
             _funcionarioLogado = funcionario;
             _funcionariosController = funcionariosController;
-            
+
             // Inicializar controlador de chamados
             string connectionString = "Server=localhost;Database=SistemaChamados;Integrated Security=true;";
             var database = new SqlServerConnection(connectionString);
             _chamadosController = new ChamadosController(database);
-            
+
             InitializeComponent();
             CarregarChamados();
         }
@@ -313,10 +319,10 @@ namespace SistemaChamados.Forms
             this.Text = $"Sistema de Chamados - Técnico: {_funcionarioLogado.Email}";
             this.Size = new System.Drawing.Size(900, 600);
             this.StartPosition = FormStartPosition.CenterScreen;
-            
+
             // Aqui você adicionaria os controles específicos do técnico
             // Como DataGridView para seus chamados, botões para marcar como resolvido, etc.
-            
+
             var lblBemVindo = new Label();
             lblBemVindo.Text = $"Bem-vindo, Técnico {_funcionarioLogado.Email}";
             lblBemVindo.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold);
@@ -331,12 +337,12 @@ namespace SistemaChamados.Forms
             {
                 // Carregar chamados do técnico
                 var chamadosDoTecnico = _chamadosController.ListarChamadosPorTecnico(_funcionarioLogado.Id);
-                
+
                 // Exibir chamados no DataGridView
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro ao carregar chamados: {ex.Message}", "Erro", 
+                MessageBox.Show($"Erro ao carregar chamados: {ex.Message}", "Erro",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }

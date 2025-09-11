@@ -1,6 +1,6 @@
 using System;
 using System.Windows.Forms;
-using SistemaChamados.Forms;
+using SistemaChamados.src.Forms;
 using SistemaChamados.Config;
 
 namespace SistemaChamados
@@ -12,13 +12,17 @@ namespace SistemaChamados
         /// Ponto de entrada principal para a aplicação.
         /// </summary>
         [STAThread]
-        static void Main()
+        private static void Main()
         {
+
+
+            
             try
             {
                 // Configurar aplicação Windows Forms
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
+      
 
                 // Verificar conexão com banco de dados
                 if (!VerificarConexaoBancoDados())
@@ -54,6 +58,7 @@ namespace SistemaChamados
                     "Erro Fatal",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error
+             
                 );
             }
         }
@@ -145,6 +150,10 @@ namespace SistemaChamados
                 // Ignorar erros de log
             }
         }
+    }
+
+    internal class MainAppContext : Form
+    {
     }
 
     /// <summary>

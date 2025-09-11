@@ -1,8 +1,7 @@
 -- Script para criação das tabelas do Sistema de Chamados
 -- SQL Server Database
-
 -- Usar o banco de dados (substitua pelo nome do seu banco)
-USE [SistemaChamados]
+USE SistemaChamados
 GO
 
 -- Criar tabela Funcionarios
@@ -178,3 +177,20 @@ PRINT '- Categorias'
 PRINT ''
 PRINT 'Índices e constraints criados para otimização e integridade dos dados.'
 PRINT 'Usuário administrador padrão disponível para primeiro acesso.'
+
+SELECT name FROM sys.databases WHERE name = 'SistemaChamados';
+
+-- Verificar se tabelas existem
+USE SistemaChamados;
+SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES;
+
+-- Verificar se usuário admin existe
+SELECT * FROM Funcionarios WHERE Email = 'admin@sistema.com';
+
+-- Verificar dados da tabela
+SELECT Id, Nome, Email, NivelAcesso FROM Funcionarios;
+
+select * from Funcionarios;
+
+
+

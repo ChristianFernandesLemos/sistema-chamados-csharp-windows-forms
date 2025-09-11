@@ -7,7 +7,7 @@ namespace SistemaChamados.Models
     public abstract class Funcionarios
     {
         // Atributos
-        public char Nome { get; set; }
+        public string Nome { get; set; }
         public string Cpf { get; set; }
         public string Email { get; set; }
         public string Senha { get; set; }
@@ -15,7 +15,7 @@ namespace SistemaChamados.Models
         public int NivelAcesso { get; set; }
 
         // Construtor
-        public Funcionarios(int id, char nome, string cpf, string email, string senha, int nivelAcesso)
+        public Funcionarios(int id, string nome, string cpf, string email, string senha, int nivelAcesso)
         {
             Id = id;
             Nome = nome;

@@ -7,7 +7,7 @@ namespace SistemaChamados.Models
     public class ADM : Funcionarios
     {
         // Construtor
-        public ADM(int id, char nome, string cpf, string email, string senha, int nivelAcesso)
+        public ADM(int id, string nome, string cpf, string email, string senha, int nivelAcesso)
             : base(id, nome, cpf, email, senha, nivelAcesso)
         {
         }
@@ -28,7 +28,7 @@ namespace SistemaChamados.Models
         }
 
         // Sobrecarga do método AdicionarUsuarios com parâmetros individuais
-        public void AdicionarUsuarios(int id, char nome, string cpf, string email, string senha, int nivelAcesso, string tipoFuncionario)
+        public void AdicionarUsuarios(int id, string nome, string cpf, string email, string senha, int nivelAcesso, string tipoFuncionario)
         {
             try
             {

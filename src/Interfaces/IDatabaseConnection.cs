@@ -6,7 +6,7 @@ using SistemaChamados.Models;
 namespace SistemaChamados.Interfaces
 {
     // Interface para operações de banco de dados
-    public interface IDatabaseConnection
+    public interface IDatabaseConnection : IDisposable
     {
         // Métodos de conexão
         bool AbrirConexao();

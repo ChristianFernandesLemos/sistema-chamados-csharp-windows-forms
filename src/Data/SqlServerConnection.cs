@@ -10,8 +10,8 @@ namespace SistemaChamados.Data
     // Implementação da conexão com SQL Server
     public class SqlServerConnection : IDatabaseConnection
     {
-        private string _connectionString;
-        private SqlConnection _connection;
+        private readonly string _connectionString;
+        private readonly SqlConnection _connection;
 
         // Construtor
         public SqlServerConnection(string connectionString)
@@ -194,7 +194,7 @@ namespace SistemaChamados.Data
                             {
                                 return new ADM(
                                     Convert.ToInt32(reader["Id"]),
-                                    Convert.ToChar(reader["Nome"]),
+                                    Convert.ToString(reader["Nome"]),
                                     reader["Cpf"].ToString(),
                                     reader["Email"].ToString(),
                                     reader["Senha"].ToString(),
@@ -205,7 +205,7 @@ namespace SistemaChamados.Data
                             {
                                 return new Tecnico(
                                     Convert.ToInt32(reader["Id"]),
-                                    Convert.ToChar(reader["Nome"]),
+                                    Convert.ToString(reader["Nome"]),
                                     reader["Cpf"].ToString(),
                                     reader["Email"].ToString(),
                                     reader["Senha"].ToString(),
@@ -245,7 +245,7 @@ namespace SistemaChamados.Data
                             {
                                 return new ADM(
                                     Convert.ToInt32(reader["Id"]),
-                                    Convert.ToChar(reader["Nome"]),
+                                    Convert.ToString(reader["Nome"]),
                                     reader["Cpf"].ToString(),
                                     reader["Email"].ToString(),
                                     reader["Senha"].ToString(),
@@ -256,7 +256,7 @@ namespace SistemaChamados.Data
                             {
                                 return new Tecnico(
                                     Convert.ToInt32(reader["Id"]),
-                                    Convert.ToChar(reader["Nome"]),
+                                    Convert.ToString(reader["Nome"]),
                                     reader["Cpf"].ToString(),
                                     reader["Email"].ToString(),
                                     reader["Senha"].ToString(),
@@ -295,7 +295,7 @@ namespace SistemaChamados.Data
                             {
                                 funcionarios.Add(new ADM(
                                     Convert.ToInt32(reader["Id"]),
-                                    Convert.ToChar(reader["Nome"]),
+                                    Convert.ToString(reader["Nome"]),
                                     reader["Cpf"].ToString(),
                                     reader["Email"].ToString(),
                                     reader["Senha"].ToString(),
@@ -306,7 +306,7 @@ namespace SistemaChamados.Data
                             {
                                 funcionarios.Add(new Tecnico(
                                     Convert.ToInt32(reader["Id"]),
-                                    Convert.ToChar(reader["Nome"]),
+                                    Convert.ToString(reader["Nome"]),
                                     reader["Cpf"].ToString(),
                                     reader["Email"].ToString(),
                                     reader["Senha"].ToString(),
