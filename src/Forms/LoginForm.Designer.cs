@@ -1,4 +1,4 @@
-﻿namespace SistemaChamados.src.Forms
+﻿namespace SistemaChamados.Forms
 {
     partial class LoginForm
     {
@@ -26,7 +26,7 @@
         /// Método necesario para admitir el Diseñador. No se puede modificar
         /// el contenido de este método con el editor de código.
         /// </summary>
-        
+
 
         #endregion
     }

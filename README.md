@@ -153,7 +153,7 @@ msbuild SistemaChamados.sln /p:Configuration=Release
 
 #### 👨‍💼 Administrador (ADM)
 - ✅ Visualizar todos os chamados
-- ✅ Adicionar/remover funcionários
+- ✅ Adicionar/remover funcionários/técnicos
 - ✅ Alterar senhas de qualquer usuário
 - ✅ Gerar relatórios completos
 - ✅ Configurar categorias e prioridades
@@ -163,16 +163,28 @@ msbuild SistemaChamados.sln /p:Configuration=Release
 - ✅ Marcar chamados como resolvidos
 - ✅ Alterar prioridade de chamados
 - ✅ Adicionar comentários/contestações
-- ✅ Alterar própria senha
+- ✅ Gerar relatórios completos
+
+####  Funcionário Comum
+- ✅ Criar novos chamados
+- ✅ Visualizar status dos próprios chamados
+- ✅ Adicionar comentários/contestações na criação
+- ✅ Receber notificações por email (se configurado)
+
+####  IA (Inteligência Artificial)
+- ✅ Atribuir técnicos automaticamente com base na carga de trabalho
+- ✅ Sugerir prioridades com base na descrição do chamado
+
+
 
 ### 3. Fluxo de Trabalho Típico
 
 ```
 1. Funcionário cria chamado
-2. Administrador atribui técnico
+2. IA atribui técnico
 3. Técnico trabalha no chamado
 4. Técnico marca como resolvido
-5. Administrador fecha o chamado
+5. Técnico fecha o chamado
 ```
 
 ## 📁 Estrutura do Projeto
@@ -180,9 +192,16 @@ msbuild SistemaChamados.sln /p:Configuration=Release
 ```
 SistemaChamados/
 │
+├── Properties/
+│   ├── AssemblyInfo.cs
+│   └── Resources.resx
+│   └── Settings.settings
+|
+|
 ├── src/
 │   ├── Models/
 │   │   ├── Funcionarios.cs      # Classe base
+|   |   |   Funcionario.cs       # Herda de Funcionarios
 │   │   ├── Tecnico.cs           # Herda de Funcionarios
 │   │   ├── ADM.cs               # Herda de Funcionarios
 │   │   └── Chamados.cs          # Modelo de chamados
@@ -192,7 +211,17 @@ SistemaChamados/
 │   │   └── ChamadosController.cs
 │   │
 │   ├── Forms/
-│   │   └── LoginForm.cs         # Interface de login
+│   │   └── LoginForm.cs             # Interface de login
+│   │   └── AlterarPrioridadeForm.cs # Interface para alterar prioridade
+│   │   └── AlterarStatusForm.cs     # Interface para alterar status
+│   │   └── ContestacaoForm.cs       # Interface para contestações
+│   │   └── CriarChamadoForm.cs      # Interface para criar chamados
+│   │   └── DetalhesChamadoForm.cs   # Interface para detalhes do chamado
+│   │   └── EditarUsuarioForm.cs     # Interface para editar usuário
+│   │   └── GerenciarChamadosForm.cs # Interface para gerenciar chamados
+│   │   └── GerenciarUsuariosForm.cs # Interface para gerenciar usuarios
+│   │   └── NovoUsuarioForm.cs       # Interface para gerenciar chamados
+│   │   └── VisualizarChamadosForm.cs# Interface para gerenciar chamados
 │   │
 │   ├── Data/
 │   │   └── SqlServerConnection.cs
@@ -204,7 +233,7 @@ SistemaChamados/
 │   │   └── DatabaseConfig.cs
 │   │
 │   ├── Database/
-│   │   └── CreateTables.sql
+│   │   └── SistemaChamados.sql
 │   │
 │   └── Program.cs               # Ponto de entrada
 │
@@ -241,6 +270,12 @@ public class ADM : Funcionarios
 {
     public void AdicionarUsuarios(Funcionarios novoFuncionario) { }
     public void AlterarSenha(int idFuncionario, string novaSenha) { }
+}
+
+public class Funcionario : Funcionarios
+{
+    public void CriarChamado(string categoria, string descricao) { }
+    public void VerStatusChamado(int idChamado) { }
 }
 
 // Classe Independente

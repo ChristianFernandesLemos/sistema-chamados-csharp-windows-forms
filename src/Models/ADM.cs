@@ -6,11 +6,16 @@ namespace SistemaChamados.Models
     // Classe filha ADM (Administrador)
     public class ADM : Funcionarios
     {
+        public ADM() : base() { }
+
         // Construtor
         public ADM(int id, string nome, string cpf, string email, string senha, int nivelAcesso)
             : base(id, nome, cpf, email, senha, nivelAcesso)
         {
         }
+
+        public override string TipoFuncionario => "Administrador";
+        public override int NivelAcesso => 3;
 
         // Método para adicionar usuários
         public void AdicionarUsuarios(Funcionarios novoFuncionario)
@@ -42,6 +47,9 @@ namespace SistemaChamados.Models
                         break;
                     case "adm":
                         novoFuncionario = new ADM(id, nome, cpf, email, senha, nivelAcesso);
+                        break;
+                    case "funcionario":
+                        novoFuncionario = new Funcionario(id, nome, cpf, email, senha, nivelAcesso);
                         break;
                     default:
                         throw new ArgumentException("Tipo de funcionário inválido");

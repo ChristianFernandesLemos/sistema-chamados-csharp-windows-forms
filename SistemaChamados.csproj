@@ -56,6 +56,9 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
+    <Reference Include="System.Configuration.ConfigurationManager, Version=9.0.0.9, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\System.Configuration.ConfigurationManager.9.0.9\lib\net462\System.Configuration.ConfigurationManager.dll</HintPath>
+    </Reference>
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -68,6 +71,75 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="src\Forms\AlterarPrioridadeForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="src\Forms\AlterarSenhaForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="src\Forms\AlterarSenhaForm.Designer.cs">
+      <DependentUpon>AlterarSenhaForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\Forms\AlterarStatusForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="src\Forms\AtribuirTecnicoForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="src\Forms\ComboBoxItem.cs" />
+    <Compile Include="src\Forms\ContestacaoForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="src\Forms\CriarChamadoForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="src\Forms\CriarChamadoForm.Designer.cs">
+      <DependentUpon>CriarChamadoForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\Forms\DetalhesChamadoForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="src\Forms\DetalhesChamadoForm.Designer.cs">
+      <DependentUpon>DetalhesChamadoForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\Forms\EditarUsuarioForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="src\Forms\EditarUsuarioForm.Designer.cs">
+      <DependentUpon>EditarUsuarioForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\Forms\GerenciarChamadosForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="src\Forms\GerenciarChamadosForm.Designer.cs">
+      <DependentUpon>GerenciarChamadosForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\Forms\GerenciarUsuariosForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="src\Forms\GerenciarUsuariosForm.Designer.cs">
+      <DependentUpon>GerenciarUsuariosForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\Forms\MenuPrincipalForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="src\Forms\MenuPrincipalForm.Designer.cs">
+      <DependentUpon>MenuPrincipalForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\Forms\NovoUsuarioForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="src\Forms\NovoUsuarioForm.Designer.cs">
+      <DependentUpon>NovoUsuarioForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\Forms\TecnicoItem.cs" />
+    <Compile Include="src\Forms\VisualizarChamadosForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="src\Forms\VisualizarChamadosForm.Designer.cs">
+      <DependentUpon>VisualizarChamadosForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\Models\Funcionario.cs" />
     <Compile Include="src\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <!-- Models -->
@@ -95,6 +167,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="packages.config" />
     <None Include="README.md" />
     <None Include="src\plan.txt" />
   </ItemGroup>

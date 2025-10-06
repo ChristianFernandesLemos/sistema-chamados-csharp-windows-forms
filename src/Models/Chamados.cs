@@ -33,7 +33,7 @@ namespace SistemaChamados.Models
         public int Afetado { get; set; } // ID do funcionário afetado
         public DateTime DataChamado { get; set; }
         public StatusChamado Status { get; set; }
-        public int TecnicoResponsavel { get; set; } // ID do técnico responsável
+        public int? TecnicoResponsavel { get; set; } // ID do técnico responsável
         public DateTime? DataResolucao { get; set; }
 
         // Construtor
@@ -57,7 +57,7 @@ namespace SistemaChamados.Models
         }
 
         // Método para criar chamado
-        public void CriarChamado()
+        public int CriarChamado()
         {
             try
             {
@@ -65,8 +65,10 @@ namespace SistemaChamados.Models
                 // Aqui seria feita a inserção no banco de dados
                 this.DataChamado = DateTime.Now;
                 this.Status = StatusChamado.Aberto;
-                
+                this.IdChamado = new Random().Next(1000, 9999);
+
                 Console.WriteLine($"Chamado {IdChamado} criado com sucesso em {DataChamado}");
+                return this.IdChamado;
             }
             catch (Exception ex)
             {

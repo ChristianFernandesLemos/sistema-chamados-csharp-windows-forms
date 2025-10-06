@@ -5,11 +5,16 @@ namespace SistemaChamados.Models
     // Classe filha Técnico
     public class Tecnico : Funcionarios
     {
+        public Tecnico() : base() { }
+
         // Construtor
         public Tecnico(int id, string nome, string cpf, string email, string senha, int nivelAcesso)
             : base(id, nome, cpf, email, senha, nivelAcesso)
         {
         }
+        public override string TipoFuncionario => "Técnico";
+        public override int NivelAcesso => 2;
+        public string Especializacao { get; set; }
 
         // Método para marcar chamado como resolvido
         public void MarcarChamadoResolvido(int idChamado)

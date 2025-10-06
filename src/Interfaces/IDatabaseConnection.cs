@@ -1,39 +1,42 @@
+// IDatabaseConnection.cs
 using System;
 using System.Collections.Generic;
 using System.Data;
+using SistemaChamados.Controllers;
 using SistemaChamados.Models;
 
 namespace SistemaChamados.Interfaces
 {
-    // Interface para operações de banco de dados
     public interface IDatabaseConnection : IDisposable
     {
-        // Métodos de conexão
-        bool AbrirConexao();
-        void FecharConexao();
-        bool TestarConexao();
-
-        // Métodos para Funcionários
-        bool InserirFuncionario(Funcionarios funcionario);
-        bool AtualizarFuncionario(Funcionarios funcionario);
-        bool RemoverFuncionario(int id);
-        Funcionarios BuscarFuncionarioPorId(int id);
-        Funcionarios BuscarFuncionarioPorEmail(string email);
-        List<Funcionarios> ListarTodosFuncionarios();
+        // Métodos de Funcionários
         bool ValidarLogin(string email, string senha);
+        Funcionarios BuscarFuncionarioPorEmail(string email);
+        Funcionarios BuscarFuncionarioPorId(int id);
+        List<Funcionarios> ListarTodosFuncionarios();
+        List<Tecnico> ListarTecnicos();
+        int InserirFuncionario(Funcionarios funcionario);
+        bool AtualizarFuncionario(Funcionarios funcionario);
+        bool AlterarSenha(int funcionarioId, string novaSenha);
+        bool AlterarNivelAcesso(int funcionarioId, int novoNivel);
+        bool ExcluirFuncionario(int funcionarioId);
+        EstatisticasFuncionarios ObterEstatisticasFuncionarios();
 
-        // Métodos para Chamados
-        bool InserirChamado(Chamados chamado);
+        // Métodos de Chamados
+        int InserirChamado(Chamados chamado);
         bool AtualizarChamado(Chamados chamado);
-        bool RemoverChamado(int idChamado);
-        Chamados BuscarChamadoPorId(int idChamado);
+        Chamados BuscarChamadoPorId(int id);
         List<Chamados> ListarTodosChamados();
-        List<Chamados> ListarChamadosPorTecnico(int idTecnico);
+        List<Chamados> ListarChamadosPorFuncionario(int funcionarioId);
+        List<Chamados> ListarChamadosPorTecnico(int tecnicoId);
         List<Chamados> ListarChamadosPorStatus(StatusChamado status);
         List<Chamados> ListarChamadosPorPrioridade(int prioridade);
 
-        // Métodos de relatórios
+        // Relatórios
         DataTable ObterRelatorioGeral();
         DataTable ObterRelatorioPorPeriodo(DateTime dataInicio, DateTime dataFim);
+
+        // Conexão
+        bool TestarConexao();
     }
 }

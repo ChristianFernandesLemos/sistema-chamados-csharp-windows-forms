@@ -1,7 +1,9 @@
+using SistemaChamados.Config;
+using SistemaChamados.Data;
+using SistemaChamados.Forms;
 using System;
 using System.Windows.Forms;
-using SistemaChamados.src.Forms;
-using SistemaChamados.Config;
+
 
 namespace SistemaChamados
 {
@@ -15,8 +17,30 @@ namespace SistemaChamados
         private static void Main()
         {
 
+            try
+            {
+                var connectionString = DatabaseConfig.ConnectionString;
+                var database = new SqlServerConnection(connectionString);
 
-            
+                if (database.TestarConexao())
+                {
+                    Console.WriteLine("Conexão OK!");
+
+                    // Testar login
+                    var funcionario = database.BuscarFuncionarioPorEmail("admin@sistema.com");
+                    if (funcionario != null)
+                    {
+                        Console.WriteLine($"Usuário encontrado: {funcionario.Nome} - {funcionario.TipoFuncionario}");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erro: {ex.Message}");
+            }
+
+
+
             try
             {
                 // Configurar aplicação Windows Forms
@@ -211,5 +235,9 @@ namespace SistemaChamados
         public const int GRID_PAGE_SIZE = 50;
         public const int SEARCH_MIN_CHARS = 3;
         public const int AUTO_REFRESH_SECONDS = 30;
+
     }
 }
+
+
+

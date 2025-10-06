@@ -1,21 +1,29 @@
 using System;
-using System.Collections.Generic;
 
 namespace SistemaChamados.Models
 {
-    // Classe base Funcionarios
     public abstract class Funcionarios
     {
-        // Atributos
-        public string Nome { get; set; }
+        public int Id { get; set; }
+        public string Nome { get; set; } 
         public string Cpf { get; set; }
         public string Email { get; set; }
         public string Senha { get; set; }
-        public int Id { get; set; }
-        public int NivelAcesso { get; set; }
+        
+        // Propriedades virtuais para permitir override nas classes filhas
+        public virtual int NivelAcesso { get; set; }
+        public virtual string TipoFuncionario { get; set; }
+        
+        public DateTime DataCadastro { get; set; }
+        public bool Ativo { get; set; }
 
-        // Construtor
-        public Funcionarios(int id, string nome, string cpf, string email, string senha, int nivelAcesso)
+        protected Funcionarios()
+        {
+            DataCadastro = DateTime.Now;
+            Ativo = true;
+        }
+
+        protected Funcionarios(int id, string nome, string cpf, string email, string senha, int nivelAcesso)
         {
             Id = id;
             Nome = nome;
@@ -23,13 +31,23 @@ namespace SistemaChamados.Models
             Email = email;
             Senha = senha;
             NivelAcesso = nivelAcesso;
+            DataCadastro = DateTime.Now;
+            Ativo = true;
         }
 
-        // Método para visualizar chamados
+        // Métodos virtuais para serem sobrescritos
         public virtual void VisualizarChamados()
         {
-            // Implementação base para visualizar chamados
-            // Esta será sobrescrita nas classes filhas conforme necessário
+            Console.WriteLine($"{Nome} está visualizando chamados...");
+        }
+
+        public virtual void AlterarSenhaPropria(string novaSenha)
+        {
+            if (string.IsNullOrWhiteSpace(novaSenha))
+                throw new ArgumentException("Nova senha não pode ser vazia");
+
+            Senha = novaSenha;
+            Console.WriteLine("Senha alterada com sucesso!");
         }
     }
 }

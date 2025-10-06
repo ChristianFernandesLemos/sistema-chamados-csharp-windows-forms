@@ -6,6 +6,8 @@ namespace SistemaChamados.Config
     // Classe para gerenciar configurações do banco de dados
     public static class DatabaseConfig
     {
+
+
         // String de conexão padrão
         private static string _connectionString;
 

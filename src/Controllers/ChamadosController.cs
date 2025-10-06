@@ -1,165 +1,87 @@
+
 using System;
 using System.Collections.Generic;
-using System.Data;
+using SistemaChamados.Config;
 using SistemaChamados.Data;
-using SistemaChamados.Interfaces;
 using SistemaChamados.Models;
 
 namespace SistemaChamados.Controllers
 {
-    // Controlador para gerenciar operações de chamados
     public class ChamadosController
     {
-        private readonly IDatabaseConnection _database;
+        private readonly SqlServerConnection _database;
 
-        // Construtor
-        public ChamadosController(IDatabaseConnection database)
+        // Constructor con parámetro
+        public ChamadosController(SqlServerConnection database)
         {
-            _database = database;
+            _database = database ?? throw new ArgumentNullException(nameof(database));
         }
 
-        // Criar novo chamado
-        public bool CriarChamado(string categoria, string descricao, int afetado, int prioridade = 2)
+        // Constructor sin parámetros para compatibilidad
+        public ChamadosController()
+        {
+            string connectionString = DatabaseConfig.ConnectionString;
+            _database = new SqlServerConnection(connectionString);
+        }
+
+        // CORRIGIDO: Criar chamado unificado
+        public int CriarChamado(Chamados chamado)
         {
             try
             {
-                var chamado = new Chamados
-                {
-                    Categoria = categoria,
-                    Descricao = descricao,
-                    Afetado = afetado,
-                    Prioridade = prioridade
-                };
+                if (chamado == null)
+                    throw new ArgumentNullException(nameof(chamado));
 
-                chamado.CriarChamado();
+                // Validações básicas
+                if (string.IsNullOrWhiteSpace(chamado.Descricao))
+                    throw new ArgumentException("Descrição é obrigatória");
+
+                if (string.IsNullOrWhiteSpace(chamado.Categoria))
+                    throw new ArgumentException("Categoria é obrigatória");
+
+                // Configurar dados padrão
+                chamado.DataChamado = DateTime.Now;
+                chamado.Status = StatusChamado.Aberto;
+
+                // Inserir no banco e retornar ID
                 return _database.InserirChamado(chamado);
             }
             catch (Exception ex)
             {
-                throw new Exception($"Erro ao criar chamado: {ex.Message}");
+                Console.WriteLine($"Erro ao criar chamado: {ex.Message}");
+                throw;
             }
         }
 
-        // Atribuir técnico a um chamado
-        public bool AtribuirTecnico(int idChamado, int idTecnico)
+        // CORRIGIDO: Listar chamados por funcionário
+        public List<Chamados> ListarChamadosPorFuncionario(int funcionarioId)
         {
             try
             {
-                var chamado = _database.BuscarChamadoPorId(idChamado);
-                if (chamado == null)
-                {
-                    throw new Exception("Chamado não encontrado");
-                }
-
-                chamado.AtribuirTecnico(idTecnico);
-                return _database.AtualizarChamado(chamado);
+                return _database.ListarChamadosPorFuncionario(funcionarioId);
             }
             catch (Exception ex)
             {
-                throw new Exception($"Erro ao atribuir técnico: {ex.Message}");
+                Console.WriteLine($"Erro ao listar chamados por funcionário: {ex.Message}");
+                return new List<Chamados>();
             }
         }
 
-        // Alterar prioridade do chamado
-        public bool AlterarPrioridade(int idChamado, int novaPrioridade)
+        // CORRIGIDO: Listar chamados por técnico
+        public List<Chamados> ListarChamadosPorTecnico(int tecnicoId)
         {
             try
             {
-                var chamado = _database.BuscarChamadoPorId(idChamado);
-                if (chamado == null)
-                {
-                    throw new Exception("Chamado não encontrado");
-                }
-
-                chamado.AlterarPrioridade(novaPrioridade);
-                return _database.AtualizarChamado(chamado);
+                return _database.ListarChamadosPorTecnico(tecnicoId);
             }
             catch (Exception ex)
             {
-                throw new Exception($"Erro ao alterar prioridade: {ex.Message}");
+                Console.WriteLine($"Erro ao listar chamados por técnico: {ex.Message}");
+                return new List<Chamados>();
             }
         }
 
-        // Alterar status do chamado
-        public bool AlterarStatus(int idChamado, StatusChamado novoStatus)
-        {
-            try
-            {
-                var chamado = _database.BuscarChamadoPorId(idChamado);
-                if (chamado == null)
-                {
-                    throw new Exception("Chamado não encontrado");
-                }
-
-                chamado.AlterarStatus(novoStatus);
-                return _database.AtualizarChamado(chamado);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Erro ao alterar status: {ex.Message}");
-            }
-        }
-
-        // Marcar chamado como resolvido
-        public bool MarcarComoResolvido(int idChamado, int idTecnico)
-        {
-            try
-            {
-                var chamado = _database.BuscarChamadoPorId(idChamado);
-                if (chamado == null)
-                {
-                    throw new Exception("Chamado não encontrado");
-                }
-
-                // Verificar se o técnico é responsável pelo chamado
-                if (chamado.TecnicoResponsavel != idTecnico)
-                {
-                    throw new Exception("Técnico não é responsável por este chamado");
-                }
-
-                chamado.AlterarStatus(StatusChamado.Resolvido);
-                return _database.AtualizarChamado(chamado);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Erro ao marcar chamado como resolvido: {ex.Message}");
-            }
-        }
-
-        // Adicionar contestação ao chamado
-        public bool AdicionarContestacao(int idChamado, string contestacao)
-        {
-            try
-            {
-                var chamado = _database.BuscarChamadoPorId(idChamado);
-                if (chamado == null)
-                {
-                    throw new Exception("Chamado não encontrado");
-                }
-
-                chamado.AdicionarContestacao(contestacao);
-                return _database.AtualizarChamado(chamado);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Erro ao adicionar contestação: {ex.Message}");
-            }
-        }
-
-        // Listar chamados por técnico
-        public List<Chamados> ListarChamadosPorTecnico(int idTecnico)
-        {
-            try
-            {
-                return _database.ListarChamadosPorTecnico(idTecnico);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Erro ao listar chamados por técnico: {ex.Message}");
-            }
-        }
-
-        // Listar todos os chamados
+        // CORRIGIDO: Listar todos os chamados
         public List<Chamados> ListarTodosChamados()
         {
             try
@@ -168,33 +90,163 @@ namespace SistemaChamados.Controllers
             }
             catch (Exception ex)
             {
-                throw new Exception($"Erro ao listar chamados: {ex.Message}");
+                Console.WriteLine($"Erro ao listar todos os chamados: {ex.Message}");
+                return new List<Chamados>();
             }
         }
 
-        // Listar chamados por status
-        public List<Chamados> ListarChamadosPorStatus(StatusChamado status)
+        // CORRIGIDO: Alterar status implementado
+        public bool AlterarStatus(int idChamado, int novoStatus)
         {
             try
             {
-                return _database.ListarChamadosPorStatus(status);
+                if (!Enum.IsDefined(typeof(StatusChamado), novoStatus))
+                    throw new ArgumentException("Status inválido");
+
+                return AlterarStatus(idChamado, (StatusChamado)novoStatus);
             }
             catch (Exception ex)
             {
-                throw new Exception($"Erro ao listar chamados por status: {ex.Message}");
+                Console.WriteLine($"Erro ao alterar status: {ex.Message}");
+                return false;
             }
         }
 
-        // Listar chamados por prioridade
-        public List<Chamados> ListarChamadosPorPrioridade(int prioridade)
+        // Sobrecarga para enum
+        public bool AlterarStatus(int idChamado, StatusChamado novoStatus)
         {
             try
             {
-                return _database.ListarChamadosPorPrioridade(prioridade);
+                var chamado = _database.BuscarChamadoPorId(idChamado);
+                if (chamado == null)
+                    throw new Exception("Chamado não encontrado");
+
+                chamado.AlterarStatus(novoStatus);
+                return _database.AtualizarChamado(chamado);
             }
             catch (Exception ex)
             {
-                throw new Exception($"Erro ao listar chamados por prioridade: {ex.Message}");
+                Console.WriteLine($"Erro ao alterar status: {ex.Message}");
+                return false;
+            }
+        }
+
+        // CORRIGIDO: Alterar prioridade implementado
+        public bool AlterarPrioridade(int idChamado, int novaPrioridade)
+        {
+            try
+            {
+                var chamado = _database.BuscarChamadoPorId(idChamado);
+                if (chamado == null)
+                    throw new Exception("Chamado não encontrado");
+
+                chamado.AlterarPrioridade(novaPrioridade);
+                return _database.AtualizarChamado(chamado);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erro ao alterar prioridade: {ex.Message}");
+                return false;
+            }
+        }
+
+        // CORRIGIDO: Atribuir técnico implementado
+        public bool AtribuirTecnico(int idChamado, int idTecnico)
+        {
+            try
+            {
+                var chamado = _database.BuscarChamadoPorId(idChamado);
+                if (chamado == null)
+                    throw new Exception("Chamado não encontrado");
+
+                chamado.AtribuirTecnico(idTecnico);
+                return _database.AtualizarChamado(chamado);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erro ao atribuir técnico: {ex.Message}");
+                return false;
+            }
+        }
+
+        // CORRIGIDO: Marcar como resolvido implementado
+        public bool MarcarComoResolvido(int idChamado)
+        {
+            try
+            {
+                return AlterarStatus(idChamado, StatusChamado.Resolvido);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erro ao marcar como resolvido: {ex.Message}");
+                return false;
+            }
+        }
+
+        // CORRIGIDO: Fechar chamado implementado
+        public bool FecharChamado(int idChamado)
+        {
+            try
+            {
+                return AlterarStatus(idChamado, StatusChamado.Fechado);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erro ao fechar chamado: {ex.Message}");
+                return false;
+            }
+        }
+
+        // CORRIGIDO: Reabrir chamado implementado
+        public bool ReabrirChamado(int idChamado)
+        {
+            try
+            {
+                return AlterarStatus(idChamado, StatusChamado.Aberto);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erro ao reabrir chamado: {ex.Message}");
+                return false;
+            }
+        }
+
+        // CORRIGIDO: Adicionar contestação implementado
+        public bool AdicionarContestacao(int idChamado, string contestacao)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(contestacao))
+                    throw new ArgumentException("Contestação não pode ser vazia");
+
+                var chamado = _database.BuscarChamadoPorId(idChamado);
+                if (chamado == null)
+                    throw new Exception("Chamado não encontrado");
+
+                chamado.AdicionarContestacao(contestacao);
+                return _database.AtualizarChamado(chamado);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erro ao adicionar contestação: {ex.Message}");
+                return false;
+            }
+        }
+
+        // CORRIGIDO: Atualizar chamado completo
+        public bool AtualizarChamado(Chamados chamado)
+        {
+            try
+            {
+                if (chamado == null)
+                    throw new ArgumentNullException(nameof(chamado));
+
+                return _database.AtualizarChamado(chamado);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erro ao atualizar chamado: {ex.Message}");
+                return false;
             }
         }
 
@@ -207,11 +259,12 @@ namespace SistemaChamados.Controllers
             }
             catch (Exception ex)
             {
-                throw new Exception($"Erro ao buscar chamado: {ex.Message}");
+                Console.WriteLine($"Erro ao buscar chamado: {ex.Message}");
+                return null;
             }
         }
 
-        // Obter estatísticas de chamados
+        // Estatísticas
         public Dictionary<string, int> ObterEstatisticas()
         {
             try
@@ -231,33 +284,8 @@ namespace SistemaChamados.Controllers
             }
             catch (Exception ex)
             {
-                throw new Exception($"Erro ao obter estatísticas: {ex.Message}");
-            }
-        }
-
-        // Obter relatório geral
-        public DataTable ObterRelatorioGeral()
-        {
-            try
-            {
-                return _database.ObterRelatorioGeral();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Erro ao obter relatório: {ex.Message}");
-            }
-        }
-
-        // Obter relatório por período
-        public DataTable ObterRelatorioPorPeriodo(DateTime dataInicio, DateTime dataFim)
-        {
-            try
-            {
-                return _database.ObterRelatorioPorPeriodo(dataInicio, dataFim);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Erro ao obter relatório por período: {ex.Message}");
+                Console.WriteLine($"Erro ao obter estatísticas: {ex.Message}");
+                return new Dictionary<string, int>();
             }
         }
     }

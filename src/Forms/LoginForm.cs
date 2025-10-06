@@ -1,6 +1,7 @@
-﻿using SistemaChamados.Controllers;
+using SistemaChamados.Controllers;
 using SistemaChamados.Data;
 using SistemaChamados.Models;
+using SistemaChamados.Config;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -11,10 +12,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace SistemaChamados.src.Forms
+namespace SistemaChamados.Forms
 {
     public partial class LoginForm : Form
     {
+        private FuncionariosController _funcionariosController;
         private TextBox txtEmail;
         private TextBox txtSenha;
         private Button btnLogin;
@@ -22,19 +24,18 @@ namespace SistemaChamados.src.Forms
         private Label lblSenha;
         private Label lblTitulo;
         private CheckBox chkMostrarSenha;
-        private FuncionariosController _funcionariosController;
 
         public LoginForm()
         {
             InitializeComponent();
             InicializarControladores();
         }
+
         private void InicializarControladores()
         {
             try
             {
-                // Configurar string de conexão (ajuste conforme seu ambiente)
-                string connectionString = "Server=localhost;Database=SistemaChamados;Integrated Security=true;";
+                var connectionString = DatabaseConfig.ConnectionString;
                 var database = new SqlServerConnection(connectionString);
                 _funcionariosController = new FuncionariosController(database);
             }
@@ -56,9 +57,7 @@ namespace SistemaChamados.src.Forms
             this.chkMostrarSenha = new CheckBox();
             this.SuspendLayout();
 
-            // 
             // lblTitulo
-            // 
             this.lblTitulo.AutoSize = true;
             this.lblTitulo.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Bold);
             this.lblTitulo.Location = new System.Drawing.Point(80, 30);
@@ -67,9 +66,7 @@ namespace SistemaChamados.src.Forms
             this.lblTitulo.TabIndex = 0;
             this.lblTitulo.Text = "Sistema de Chamados";
 
-            // 
             // lblEmail
-            // 
             this.lblEmail.AutoSize = true;
             this.lblEmail.Location = new System.Drawing.Point(50, 80);
             this.lblEmail.Name = "lblEmail";
@@ -77,18 +74,14 @@ namespace SistemaChamados.src.Forms
             this.lblEmail.TabIndex = 1;
             this.lblEmail.Text = "Email:";
 
-            // 
             // txtEmail
-            // 
             this.txtEmail.Location = new System.Drawing.Point(50, 100);
             this.txtEmail.Name = "txtEmail";
             this.txtEmail.Size = new System.Drawing.Size(300, 20);
             this.txtEmail.TabIndex = 2;
-            this.txtEmail.Text = "admin@sistema.com"; // Email padrão para teste
+            this.txtEmail.Text = "admin@sistema.com";
 
-            // 
             // lblSenha
-            // 
             this.lblSenha.AutoSize = true;
             this.lblSenha.Location = new System.Drawing.Point(50, 140);
             this.lblSenha.Name = "lblSenha";
@@ -96,20 +89,16 @@ namespace SistemaChamados.src.Forms
             this.lblSenha.TabIndex = 3;
             this.lblSenha.Text = "Senha:";
 
-            // 
             // txtSenha
-            // 
             this.txtSenha.Location = new System.Drawing.Point(50, 160);
             this.txtSenha.Name = "txtSenha";
             this.txtSenha.PasswordChar = '*';
             this.txtSenha.Size = new System.Drawing.Size(300, 20);
             this.txtSenha.TabIndex = 4;
-            this.txtSenha.Text = "admin123"; // Senha padrão para teste
+            this.txtSenha.Text = "admin123";
             this.txtSenha.KeyPress += new KeyPressEventHandler(this.txtSenha_KeyPress);
 
-            // 
             // chkMostrarSenha
-            // 
             this.chkMostrarSenha.AutoSize = true;
             this.chkMostrarSenha.Location = new System.Drawing.Point(50, 190);
             this.chkMostrarSenha.Name = "chkMostrarSenha";
@@ -119,9 +108,7 @@ namespace SistemaChamados.src.Forms
             this.chkMostrarSenha.UseVisualStyleBackColor = true;
             this.chkMostrarSenha.CheckedChanged += new EventHandler(this.chkMostrarSenha_CheckedChanged);
 
-            // 
             // btnLogin
-            // 
             this.btnLogin.BackColor = System.Drawing.Color.FromArgb(0, 123, 255);
             this.btnLogin.FlatStyle = FlatStyle.Flat;
             this.btnLogin.ForeColor = System.Drawing.Color.White;
@@ -133,9 +120,7 @@ namespace SistemaChamados.src.Forms
             this.btnLogin.UseVisualStyleBackColor = false;
             this.btnLogin.Click += new EventHandler(this.btnLogin_Click);
 
-            // 
             // LoginForm
-            // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
@@ -177,7 +162,6 @@ namespace SistemaChamados.src.Forms
                     return;
                 }
 
-                // Desabilitar botão durante o login
                 btnLogin.Enabled = false;
                 btnLogin.Text = "Entrando...";
 
@@ -185,22 +169,9 @@ namespace SistemaChamados.src.Forms
 
                 if (funcionario != null)
                 {
-                    MessageBox.Show($"Login realizado com sucesso!\nBem-vindo, {funcionario.Email}",
-                        "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                    // Abrir formulário principal baseado no tipo de usuário
-                    Form formPrincipal;
-                    if (funcionario is ADM)
-                    {
-                        formPrincipal = new MainFormADM(funcionario, _funcionariosController);
-                    }
-                    else
-                    {
-                        formPrincipal = new MainFormTecnico(funcionario, _funcionariosController);
-                    }
-
                     this.Hide();
-                    formPrincipal.ShowDialog();
+                    var menuPrincipal = new MenuPrincipalForm(funcionario);
+                    menuPrincipal.ShowDialog();
                     this.Close();
                 }
                 else
@@ -234,117 +205,6 @@ namespace SistemaChamados.src.Forms
         private void chkMostrarSenha_CheckedChanged(object sender, EventArgs e)
         {
             txtSenha.PasswordChar = chkMostrarSenha.Checked ? '\0' : '*';
-        }
-    }
-
-    // Classe para formulário principal do Administrador
-    public partial class MainFormADM : Form
-    {
-        private Funcionarios _funcionarioLogado;
-        private FuncionariosController _funcionariosController;
-        private ChamadosController _chamadosController;
-
-        public MainFormADM(Funcionarios funcionario, FuncionariosController funcionariosController)
-        {
-            _funcionarioLogado = funcionario;
-            _funcionariosController = funcionariosController;
-
-            // Inicializar controlador de chamados
-            string connectionString = "Server=localhost;Database=SistemaChamados;Integrated Security=true;";
-            var database = new SqlServerConnection(connectionString);
-            _chamadosController = new ChamadosController(database);
-
-            InitializeComponent();
-            CarregarDados();
-        }
-
-        private void InitializeComponent()
-        {
-            this.Text = $"Sistema de Chamados - Administrador: {_funcionarioLogado.Email}";
-            this.Size = new System.Drawing.Size(1000, 700);
-            this.StartPosition = FormStartPosition.CenterScreen;
-
-            // Aqui você adicionaria os controles específicos do administrador
-            // Como DataGridView para chamados, botões para gerenciar usuários, etc.
-
-            var lblBemVindo = new Label();
-            lblBemVindo.Text = $"Bem-vindo, Administrador {_funcionarioLogado.Email}";
-            lblBemVindo.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold);
-            lblBemVindo.Location = new System.Drawing.Point(20, 20);
-            lblBemVindo.Size = new System.Drawing.Size(500, 25);
-            this.Controls.Add(lblBemVindo);
-        }
-
-        private void CarregarDados()
-        {
-            try
-            {
-                // Carregar estatísticas e dados iniciais
-                var estatisticasChamados = _chamadosController.ObterEstatisticas();
-                var estatisticasFuncionarios = _funcionariosController.ObterEstatisticasFuncionarios(_funcionarioLogado);
-
-                // Exibir informações no formulário
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Erro ao carregar dados: {ex.Message}", "Erro",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-    }
-
-    // Classe para formulário principal do Técnico
-    public partial class MainFormTecnico : Form
-    {
-        private Funcionarios _funcionarioLogado;
-        private FuncionariosController _funcionariosController;
-        private ChamadosController _chamadosController;
-
-        public MainFormTecnico(Funcionarios funcionario, FuncionariosController funcionariosController)
-        {
-            _funcionarioLogado = funcionario;
-            _funcionariosController = funcionariosController;
-
-            // Inicializar controlador de chamados
-            string connectionString = "Server=localhost;Database=SistemaChamados;Integrated Security=true;";
-            var database = new SqlServerConnection(connectionString);
-            _chamadosController = new ChamadosController(database);
-
-            InitializeComponent();
-            CarregarChamados();
-        }
-
-        private void InitializeComponent()
-        {
-            this.Text = $"Sistema de Chamados - Técnico: {_funcionarioLogado.Email}";
-            this.Size = new System.Drawing.Size(900, 600);
-            this.StartPosition = FormStartPosition.CenterScreen;
-
-            // Aqui você adicionaria os controles específicos do técnico
-            // Como DataGridView para seus chamados, botões para marcar como resolvido, etc.
-
-            var lblBemVindo = new Label();
-            lblBemVindo.Text = $"Bem-vindo, Técnico {_funcionarioLogado.Email}";
-            lblBemVindo.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold);
-            lblBemVindo.Location = new System.Drawing.Point(20, 20);
-            lblBemVindo.Size = new System.Drawing.Size(500, 25);
-            this.Controls.Add(lblBemVindo);
-        }
-
-        private void CarregarChamados()
-        {
-            try
-            {
-                // Carregar chamados do técnico
-                var chamadosDoTecnico = _chamadosController.ListarChamadosPorTecnico(_funcionarioLogado.Id);
-
-                // Exibir chamados no DataGridView
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Erro ao carregar chamados: {ex.Message}", "Erro",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
         }
     }
 }
